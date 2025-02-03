@@ -54,7 +54,7 @@ import SignUp from './components/LoginSignup/SignUp';
 import Login from './components/LoginSignup/Login';
 import PaymentSuccess from './components/Payment/PaymentSuccess';
 import PaymentFailed from './components/Payment/PaymentFailed'; 
-
+import Account from './components/Account/Account';
 function App() {
   const location = useLocation();
 
@@ -77,6 +77,7 @@ function App() {
         <Route path="/to-pay" element={<MainLayout><Total/></MainLayout>} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/account" element={<MainLayout><Account/></MainLayout>} />
       </Routes>
       <ToastContainer 
         position="top-right"
