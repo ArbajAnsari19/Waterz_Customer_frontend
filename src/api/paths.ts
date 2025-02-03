@@ -1,0 +1,36 @@
+const URL = "http://localhost:8000";
+const userBaseURL = URL + "/user";
+const signUp = URL + "/auth";
+const booking = URL + "/booking";
+const customer = URL + "/customer";
+export const paths = {
+  // Auth endpoints
+  login: `${signUp}/signin`,
+  signupCustomer: `${signUp}/signup/customer`,
+  generateOtp: `${signUp}/generate-otp`,
+  verifyOtp: `${signUp}/verify-otp`,
+  logout: `${userBaseURL}/logout`,
+  googleAuth: `${userBaseURL}/google`,
+  
+  // User endpoints
+  getUserProfile: `${userBaseURL}/profile`,
+  updateUserProfile: `${userBaseURL}/profile/update`,
+  
+  // yacht
+  getYachtList: `${customer}/listAll`,
+  getTopYachts: `${customer}/topYatch`,
+
+  // query
+  userQuery: `${URL}/query`,
+
+  // filter
+  locationFilter: `${booking}/idealYatchs`,
+  bookYacht: `${booking}/create`,
+
+  // Booking endpoints
+    currentRides: `${customer}/current/rides`,
+    prevRides: `${customer}/prev/rides`,
+    prevRidesId: `${customer}/rides`,
+};
+
+export default paths;
