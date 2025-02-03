@@ -29,11 +29,11 @@ const Navbar: React.FC = () => {
         }
     }, [dispatch]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userData');
-        dispatch(clearUserDetails());
-    };
+    // const handleLogout = () => {
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('userData');
+    //     dispatch(clearUserDetails());
+    // };
 
     return (
         <div className={styles.comp_body}>
