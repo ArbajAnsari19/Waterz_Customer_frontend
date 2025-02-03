@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from "../../styles/LoginSignup/welcome.module.css";
-import { authAPI } from '../../api/auth';
+// import { authAPI } from '../../api/auth';
 
 interface OTPVerificationProps {
     email: string;
-    onVerify: (otp: string) => Promise<void>;
+    onVerify: (otp: number) => Promise<void>;
     onBack: () => void;
   }
   
@@ -24,7 +24,7 @@ interface OTPVerificationProps {
   
       try {
         setIsLoading(true);
-        await onVerify(otp);
+        await onVerify(parseInt(otp, 10));
       } catch (err: any) {
         setError(err.message || 'Invalid OTP. Please try again.');
       } finally {

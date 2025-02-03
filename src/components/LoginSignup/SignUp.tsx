@@ -5,6 +5,12 @@ import googleIcon from "../../assets/LoginSignUp/google.svg";
 import OTPVerification from "./OTP";
 import { authAPI } from "../../api/auth";
 import SuccessScreen from "./OTPVerified";
+
+interface OTPData {
+  otp: number;
+  token: string;
+  type: string;
+}
 import { useNavigate } from "react-router-dom";
 
 type ViewState = 'signup' | 'otp' | 'success';
@@ -14,7 +20,7 @@ interface SignupData {
   email: string;
   phone: string;
   password: string;
-  role: string;
+  type: string;
   agreeToTerms: boolean;
 }
 
@@ -28,7 +34,7 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
     email: '',
     phone: '',
     password: '',
-    role: 'customer', 
+    type: 'customer', 
     agreeToTerms: false
   });
 
@@ -150,6 +156,7 @@ const SignUp: React.FC = () => {
 
   const handleSignupComplete = async (data: SignupData) => {
     try {
+      //@ts-ignore
       const response: SignupResponse = await authAPI.signup(data);
       setFormData(data);
       setSignupToken(response.token);
@@ -164,7 +171,14 @@ const SignUp: React.FC = () => {
       if (!formData || !signupToken) {
         throw new Error('Missing required data for verification');
       }
-      await authAPI.verifyOTP({ otp, token: signupToken, role: formData.role });
+      
+      const otpData: OTPData = {
+        otp,
+        token: signupToken,
+        type: formData.type
+      };
+      
+      await authAPI.verifyOTP(otpData);
       setCurrentView('success');
     } catch (err: any) {
       throw err;

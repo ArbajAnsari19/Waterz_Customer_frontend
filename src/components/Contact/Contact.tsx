@@ -10,6 +10,7 @@ export const ContactForm: React.FC = () => {
   });
 
   const [error, setError] = useState<string>('');
+  console.log("error",error);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
