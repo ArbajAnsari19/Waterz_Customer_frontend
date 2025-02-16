@@ -7,9 +7,9 @@ import { authAPI } from "../../api/auth";
 import SuccessScreen from "./OTPVerified";
 
 interface OTPData {
-  otp: number;
+  otp: string;
   token: string;
-  type: string;
+  role: string;
 }
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +20,7 @@ interface SignupData {
   email: string;
   phone: string;
   password: string;
-  type: string;
+  role: string;
   agreeToTerms: boolean;
 }
 
@@ -34,7 +34,7 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
     email: '',
     phone: '',
     password: '',
-    type: 'customer', 
+    role: 'customer', 
     agreeToTerms: false
   });
 
@@ -166,17 +166,17 @@ const SignUp: React.FC = () => {
     }
   };
 
-  const handleOTPVerify = async (otp: number) => {
+  const handleOTPVerify = async (otp: string) => {
     try {
       if (!formData || !signupToken) {
         throw new Error('Missing required data for verification');
       }
       
       const otpData: OTPData = {
-        otp,
+        otp : otp,
         token: signupToken,
-        type: formData.type
-      };
+        role: formData.role
+      };otp
       
       await authAPI.verifyOTP(otpData);
       setCurrentView('success');

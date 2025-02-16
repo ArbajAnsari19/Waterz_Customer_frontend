@@ -1,4 +1,3 @@
-// src/components/Payment/PaymentSuccess.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 

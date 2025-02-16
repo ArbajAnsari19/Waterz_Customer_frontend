@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "../../styles/Total/Total.module.css";
 import Y2 from "../../assets/Yatch/Y2.svg";
@@ -16,7 +16,13 @@ const GST_RATE = 0.10; // 10% GST rate
 const Total: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { yacht, bookingDetails } = location.state || {};
+    const state = location.state as {
+        bookingDetails: any;
+        orderId: string;
+        packageTotal: number;
+        addonServicesTotal: number;
+        yacht?: any;
+      } | null;
 
     // Format date for display
     const formatDate = (dateString: string): string => {
@@ -37,9 +43,23 @@ const Total: React.FC = () => {
         });
     };
 
+  // If no state is passed, redirect back to home or booking page.
+  useEffect(() => {
+    if (!state) {
+      navigate("/");
+    }
+  }, [state, navigate]);
+
+  if (!state) {
+    return null;
+  }
+
+  const { bookingDetails, packageTotal, addonServicesTotal, yacht } = state;
+
+  console.log("bookingDetails", bookingDetails);
     // Get the base prices from booking details
-    const packagePrice = bookingDetails.packageTotal || 0;
-    const addonServicesPrice = bookingDetails.addonServicesTotal || 0;
+    const packagePrice = packageTotal || 0;
+    const addonServicesPrice = addonServicesTotal || 0;
 
     // Calculate subtotal and taxes
     const subtotal = packagePrice + addonServicesPrice;
@@ -88,7 +108,6 @@ const Total: React.FC = () => {
                                 }
                             }
                         );
-                        
                         navigate('/payment-success');
                     } catch (error) {
                         console.error('Payment verification failed:', error);
@@ -96,9 +115,9 @@ const Total: React.FC = () => {
                     }
                 },
                 prefill: {
-                    name: "Customer Name",
-                    email: "customer@example.com",
-                    contact: "9999999999"
+                    name: bookingDetails.name,
+                    email: bookingDetails.email,
+                    contact: bookingDetails.phone
                 },
                 theme: {
                     color: "#3399cc"

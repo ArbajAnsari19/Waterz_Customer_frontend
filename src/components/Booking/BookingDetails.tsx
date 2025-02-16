@@ -20,7 +20,6 @@ interface FormData {
   addonServices: string[];
   packages: string;
   specialRequest: string;
-  user: string;
   yacht: string;
 }
 
@@ -54,7 +53,6 @@ const BookingDetails: React.FC = () => {
     addonServices: [],
     packages: "",
     specialRequest: "",
-    user: "67804200f812512075e49d7d",
     yacht: yachtId || "",
   });
 

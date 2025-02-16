@@ -4,7 +4,7 @@ import styles from "../../styles/LoginSignup/welcome.module.css";
 
 interface OTPVerificationProps {
     email: string;
-    onVerify: (otp: number) => Promise<void>;
+    onVerify: (otp: string) => Promise<void>;
     onBack: () => void;
   }
   
@@ -24,7 +24,7 @@ interface OTPVerificationProps {
   
       try {
         setIsLoading(true);
-        await onVerify(parseInt(otp, 10));
+        await onVerify(otp);
       } catch (err: any) {
         setError(err.message || 'Invalid OTP. Please try again.');
       } finally {
