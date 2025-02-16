@@ -33,5 +33,10 @@ export const yachtAPI = {
         }
       });
       return response.data;
-    }
+    },
+
+    getYachtById: async (id : string): Promise<Yacht[]> => {
+      const response = await apiClient.get(`${paths.getYachtById}/${id}`);
+      return response.data;
+    },
   };
