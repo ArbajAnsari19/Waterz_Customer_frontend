@@ -9,11 +9,11 @@ import { useEffect, useState } from "react";
 import { bookingAPI } from "../../api/bookingApi";
 
 interface BookingType {
-  id: string;
+  _id: string;
   name: string;
   capacity: number;
   startingPrice: string;
-  imageUrl: string;
+  images: string[];
 }
 const Booking: React.FC = () => {
   const [currentBookings, setCurrentBookings] = useState<BookingType[]>([]);
@@ -45,12 +45,12 @@ const Booking: React.FC = () => {
 
     fetchBookings();
   }, []);
-  if (isLoading) {
-    return <div className={styles.loading}>Loading bookings...</div>;
-  }
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
-  }
+  // if (isLoading) {
+  //   return <div className={styles.loading}>Loading bookings...</div>;
+  // }
+  // if (error) {
+  //   return <div className={styles.error}>{error}</div>;
+  // }
   if (!currentBookings || !previousBookings) {
     return <div className={styles.error}>No booking data available</div>;
   }
@@ -89,14 +89,15 @@ const Booking: React.FC = () => {
               pagination={{ clickable: true }}
               style={{ padding: "20px 0", width: "100%" }}
             >
-              {currentBookings.map((yacht) => (
-                <SwiperSlide key={yacht.id}>
+              {currentBookings.map((booking) => (
+                <SwiperSlide key={booking._id}>
                   <BookedCard
-                    name={yacht.name}
-                    capacity={yacht.capacity}
-                    startingPrice={yacht.startingPrice}
-                    imageUrl={yacht.imageUrl}
-                    yachtId={yacht.id}
+                    name={booking.name}
+                    capacity={booking.capacity}
+                    startingPrice={booking.startingPrice}
+                    images={booking.images[0]}
+                    bookingId={booking._id}
+                    booking={booking}
                   />
                 </SwiperSlide>
               ))}
@@ -116,14 +117,15 @@ const Booking: React.FC = () => {
               pagination={{ clickable: true }}
               style={{ padding: "20px 0", width: "100%" }}
             >
-              {previousBookings.map((yacht) => (
-                <SwiperSlide key={yacht.id}>
+              {previousBookings.map((booking) => (
+                <SwiperSlide key={booking._id}>
                   <BookedCard
-                    name={yacht.name}
-                    capacity={yacht.capacity}
-                    startingPrice={yacht.startingPrice}
-                    imageUrl={yacht.imageUrl}
-                    yachtId={yacht.id}
+                    name={booking.name}
+                    capacity={booking.capacity}
+                    startingPrice={booking.startingPrice}
+                    images={booking.images[0]}
+                    bookingId={booking._id}
+                    booking={booking}
                   />
                 </SwiperSlide>
               ))}
