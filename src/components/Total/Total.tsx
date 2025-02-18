@@ -219,7 +219,7 @@ const Total: React.FC = () => {
                 {/* Coupon Code Section */}
                 <div className={styles.coupon_section}>
                     {!showCouponInput ? (
-                        <button 
+                        discount === 0   && <button 
                             className={styles.coupon_button}
                             onClick={() => setShowCouponInput(true)}
                         >
