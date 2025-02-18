@@ -12,7 +12,7 @@ declare global {
     }
 }
 
-const GST_RATE = 0.18; // 10% GST rate
+// const GST_RATE = 0.10; // 10% GST rate
 
 const Total: React.FC = () => {
     const location = useLocation();

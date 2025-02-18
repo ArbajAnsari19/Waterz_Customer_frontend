@@ -12,11 +12,11 @@ export interface Booking {
 export const bookingAPI = {
   getCurrentBookings: async (): Promise<Booking[]> => {
     const response = await apiClient.get(paths.currentRides);
-    return response.data;
+    return response.data.AllCurrentRides || [];
   },
   
   getPreviousBookings: async (): Promise<Booking[]> => {
     const response = await apiClient.get(paths.prevRides);
-    return response.data;
+    return response.data.AllPreviousRides || [];
   }
 };
