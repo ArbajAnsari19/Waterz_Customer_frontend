@@ -30,6 +30,7 @@ const Total: React.FC = () => {
         addonServicesTotal: number;
         yacht?: any;
       } | null;
+    const [orderId, setOrderId] = useState(state!.orderId);
 
     // Format date for display
     const formatDate = (dateString: string): string => {
@@ -94,7 +95,7 @@ const Total: React.FC = () => {
                 promoCode: couponCode
             });
 
-            const { discount: discountValue, discountType } = response;
+            const { discount: discountValue, discountType,orderId } = response;
             
             let calculatedDiscount = 0;
             if (discountType === "PERCENTAGE") {
@@ -102,7 +103,7 @@ const Total: React.FC = () => {
             } else if (discountType === "FIXED") {
                 calculatedDiscount = discountValue;
             }
-
+            setOrderId(orderId);
             setDiscount(calculatedDiscount);
             setShowCouponInput(false);
             setCouponCode("");
@@ -127,9 +128,8 @@ const Total: React.FC = () => {
     const handleProceedToPayment = async () => {
         try {
             await loadRazorpayScript();
-            console.log("total", finalGrandTotal)
-            const orderId = bookingDetails.razorpayOrderId;
-            
+            console.log("total", finalGrandTotal)  
+            console.log("orderId is here :", orderId)       
             const options = {
                 key: "rzp_test_5Bm8QrZJpLzooF",
                 amount: finalGrandTotal*100,
