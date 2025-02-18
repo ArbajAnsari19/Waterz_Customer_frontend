@@ -129,6 +129,7 @@ const Total: React.FC = () => {
             await loadRazorpayScript();
             console.log("total", finalGrandTotal)
             const orderId = bookingDetails.razorpayOrderId;
+            console.log("total", finalGrandTotal*100)
             
             const options = {
                 key: "rzp_test_5Bm8QrZJpLzooF",

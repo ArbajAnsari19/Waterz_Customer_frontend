@@ -11,7 +11,7 @@ import SolutionCard from "../Layouts/SolutionCard";
 import EventCard from "../Layouts/EventCard";
 import { useTopYachts } from "../../hooks/useTopYacht";
 import { Link } from "react-router-dom";
-
+import Loader1 from "../Loaders/Loader1";
 const solutionData = [
   {
     id: "solution-1",
@@ -79,27 +79,27 @@ const eventData = [
 ];
 
 const Home: React.FC = () => {
-  const { yachts, loading, error } = useTopYachts();
+  const { yachts, error } = useTopYachts();
 
-  // if (loading) {
+  // if (!loading) {
   //   return (
   //     <div className={styles.comp_body}>
   //       <div className={styles.hero_body}>
-  //         <div>Loading...</div>
+  //         <div><Loader1/></div>
   //       </div>
   //     </div>
   //   );
   // }
 
-  // if (error) {
-  //   return (
-  //     <div className={styles.comp_body}>
-  //       <div className={styles.hero_body}>
-  //         <div>{error}</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (error) {
+    return (
+      <div className={styles.comp_body}>
+        <div className={styles.hero_body}>
+          <div>{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.comp_body}>
