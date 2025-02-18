@@ -1,9 +1,10 @@
-import React,{useEffect} from "react";
+import React,{useState,useEffect} from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "../../styles/Total/Total.module.css";
 import Y2 from "../../assets/Yatch/Y2.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { yachtAPI } from "../../api/yachts";
 
 declare global {
     interface Window {
@@ -11,13 +12,19 @@ declare global {
     }
 }
 
-const GST_RATE = 0.10; // 10% GST rate
+const GST_RATE = 0.18; // 10% GST rate
 
 const Total: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const [showCouponInput, setShowCouponInput] = useState(false);
+    const [couponCode, setCouponCode] = useState("");
+    const [discount, setDiscount] = useState(0);
+    const [couponError, setCouponError] = useState("");
+    const [isApplying, setIsApplying] = useState(false);
     const state = location.state as {
         bookingDetails: any;
+        pricingDetail: any;
         orderId: string;
         packageTotal: number;
         addonServicesTotal: number;
@@ -54,18 +61,58 @@ const Total: React.FC = () => {
     return null;
   }
 
-  const { bookingDetails, packageTotal, addonServicesTotal, yacht } = state;
+  const { bookingDetails, pricingDetail, yacht } = state;
+
+//   console.log("priceDetail", pricingDetail)
 
   console.log("bookingDetails", bookingDetails);
     // Get the base prices from booking details
-    const packagePrice = packageTotal || 0;
-    const addonServicesPrice = addonServicesTotal || 0;
+    const packagePrice = pricingDetail?.packageAmount || 0;
+    const addonServicesPrice = pricingDetail?.addonCost || 0;
 
     // Calculate subtotal and taxes
     const subtotal = packagePrice + addonServicesPrice;
-    const cgst = subtotal * GST_RATE;
-    const sgst = subtotal * GST_RATE;
-    const grandTotal = subtotal + cgst + sgst;
+    const cgst = pricingDetail?.gstAmount || 0;
+    // const sgst = subtotal * GST_RATE;
+    // const grandTotal = subtotal + cgst + sgst;
+    const originalGrandTotal = pricingDetail?.totalAmount;
+    const finalGrandTotal = originalGrandTotal - discount;
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode.trim()) {
+            setCouponError("Please enter a coupon code");
+            return;
+        }
+
+        setIsApplying(true);
+        setCouponError("");
+
+        try {
+            const response = await yachtAPI.couponCode({
+                bookingId: bookingDetails._id,
+                grandTotal: bookingDetails.totalAmount,
+                promoCode: couponCode
+            });
+
+            const { discount: discountValue, discountType } = response;
+            
+            let calculatedDiscount = 0;
+            if (discountType === "PERCENTAGE") {
+                calculatedDiscount = (bookingDetails.totalAmount * discountValue) / 100;
+            } else if (discountType === "FIXED") {
+                calculatedDiscount = discountValue;
+            }
+
+            setDiscount(calculatedDiscount);
+            setShowCouponInput(false);
+            setCouponCode("");
+        } catch (error) {
+            setCouponError("Invalid coupon code");
+        } finally {
+            setIsApplying(false);
+        }
+    };
+
 
     // Razorpay integration
     const loadRazorpayScript = () => {
@@ -80,12 +127,12 @@ const Total: React.FC = () => {
     const handleProceedToPayment = async () => {
         try {
             await loadRazorpayScript();
-
+            console.log("total", finalGrandTotal)
             const orderId = bookingDetails.razorpayOrderId;
             
             const options = {
                 key: "rzp_test_5Bm8QrZJpLzooF",
-                amount: grandTotal * 100,
+                amount: finalGrandTotal*100,
                 currency: "INR",
                 name: "Waterz Rentals",
                 description: "Yacht Booking Payment",
@@ -93,7 +140,7 @@ const Total: React.FC = () => {
                 handler: async (response: any) => {
                     try {
                         const token = localStorage.getItem('token');
-                        await axios.post('http://localhost:3001/payment/verify', 
+                        await axios.post('http://localhost:8000/payment/verify', 
                             {
                                 paymentDetails: {
                                     razorpay_order_id: response.razorpay_order_id,
@@ -165,17 +212,51 @@ const Total: React.FC = () => {
                     <div className={styles.item_value}>{subtotal.toLocaleString()}</div>
                 </div>
                 <div className={styles.item_row}>
-                    <div className={styles.item_label}>CGST</div>
+                    <div className={styles.item_label}>GST(18%)</div>
                     <div className={styles.item_value}>{cgst.toLocaleString()}</div>
                 </div>
-                <div className={styles.item_row}>
-                    <div className={styles.item_label}>SGST</div>
-                    <div className={styles.item_value}>{sgst.toLocaleString()}</div>
+                
+                {/* Coupon Code Section */}
+                <div className={styles.coupon_section}>
+                    {!showCouponInput ? (
+                        <button 
+                            className={styles.coupon_button}
+                            onClick={() => setShowCouponInput(true)}
+                        >
+                            Have a coupon code?
+                        </button>
+                    ) : (
+                        <div className={styles.coupon_input_container}>
+                            <input
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value)}
+                                placeholder="Enter coupon code"
+                                className={styles.coupon_input}
+                            />
+                            <button 
+                                onClick={handleApplyCoupon}
+                                disabled={isApplying}
+                                className={styles.apply_button}
+                            >
+                                {isApplying ? "Applying..." : "Apply"}
+                            </button>
+                        </div>
+                    )}
+                    {couponError && <div className={styles.error_message}>{couponError}</div>}
                 </div>
+
+                {discount > 0 && (
+                    <div className={styles.item_row}>
+                        <div className={styles.item_label}>Discount</div>
+                        <div className={styles.item_value}>-{discount.toLocaleString()}</div>
+                    </div>
+                )}
+                
                 <hr className={styles.divider} />
                 <div className={`${styles.item_row} ${styles.grand_total}`}>
                     <div className={styles.item_label}>Grand Total</div>
-                    <div className={styles.item_value}>{grandTotal.toLocaleString()}/-</div>
+                    <div className={styles.item_value}>{finalGrandTotal.toLocaleString()}/-</div>
                 </div>
             </div>
             <div style={{width:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
@@ -190,14 +271,14 @@ const Total: React.FC = () => {
 export default Total;
 
 
-// import React from "react";
+
+
+// import React,{useEffect} from "react";
 // import "react-datepicker/dist/react-datepicker.css";
 // import styles from "../../styles/Total/Total.module.css";
 // import Y2 from "../../assets/Yatch/Y2.svg";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import axios from "axios";
-
-// // Type definitions
 
 // declare global {
 //     interface Window {
@@ -205,15 +286,18 @@ export default Total;
 //     }
 // }
 
-// const PERSON_RATE = 500; // Fixed rate per person
-// const GST_RATE = 0.10; // 10% GST rate
+// const GST_RATE = 0.18; // 10% GST rate
 
 // const Total: React.FC = () => {
 //     const location = useLocation();
 //     const navigate = useNavigate();
-//     const { yacht, bookingDetails } = location.state || {};
-
-//     // console.log("booking", bookingDetails.razorpayOrderId);
+//     const state = location.state as {
+//         bookingDetails: any;
+//         orderId: string;
+//         packageTotal: number;
+//         addonServicesTotal: number;
+//         yacht?: any;
+//       } | null;
 
 //     // Format date for display
 //     const formatDate = (dateString: string): string => {
@@ -225,26 +309,40 @@ export default Total;
 //     };
 
 //     // Format time for display
-//     const formatTime = (dateString: string): string => {
-//         return new Date(dateString).toLocaleTimeString('en-US', {
+//     const formatTime = (timeString: string): string => {
+//         const [hours, minutes] = timeString.split(':');
+//         return new Date(0, 0, 0, parseInt(hours), parseInt(minutes)).toLocaleTimeString('en-US', {
 //             hour: 'numeric',
 //             minute: 'numeric',
 //             hour12: true
 //         });
 //     };
 
-//     // Calculate individual charges
-//     const peopleCharge = bookingDetails.PeopleNo * PERSON_RATE;
-//     const sailingCharge = bookingDetails.sailingTime * (yacht?.price?.sailing || 4000);
-//     const stillCharge = bookingDetails.stillTime * (yacht?.price?.still || 3000);
-//     const eventCharge = bookingDetails.specialEvent ? 5000 : 0;
-//     const addOnsCharge = bookingDetails.specialRequest ? 2000 : 0;
+//   // If no state is passed, redirect back to home or booking page.
+//   useEffect(() => {
+//     if (!state) {
+//       navigate("/");
+//     }
+//   }, [state, navigate]);
+
+//   if (!state) {
+//     return null;
+//   }
+
+//   const { bookingDetails, packageTotal, addonServicesTotal, yacht } = state;
+
+//   console.log("bookingDetails", bookingDetails);
+//     // Get the base prices from booking details
+//     const packagePrice = packageTotal || 0;
+//     const addonServicesPrice = addonServicesTotal || 0;
 
 //     // Calculate subtotal and taxes
-//     const subtotal = peopleCharge + sailingCharge + stillCharge + eventCharge + addOnsCharge;
+//     const subtotal = packagePrice + addonServicesPrice;
 //     const cgst = subtotal * GST_RATE;
-//     const sgst = subtotal * GST_RATE;
-//     const grandTotal = subtotal + cgst + sgst;
+//     // const sgst = subtotal * GST_RATE;
+//     // const grandTotal = subtotal + cgst + sgst;
+//     const grandTotal = bookingDetails.totalAmount;
+
 
 //     // Razorpay integration
 //     const loadRazorpayScript = () => {
@@ -258,61 +356,45 @@ export default Total;
 
 //     const handleProceedToPayment = async () => {
 //         try {
-//             // 1. Load the Razorpay SDK
 //             await loadRazorpayScript();
-
-//             // // 2. Make API call to create order
-//             // const response = await axios.post('http://localhost:3001/booking/create-order', {
-//             //     amount: grandTotal,
-//             //     currency: "INR",
-//             //     sailingTime: bookingDetails.sailingTime,
-//             //     stillTime: bookingDetails.stillTime,
-//             //     specialEvent: bookingDetails.specialEvent,
-//             //     specialRequest: bookingDetails.specialRequest,
-//             //     PeopleNo: bookingDetails.PeopleNo
-//             // });
-
-//             const orderId  = bookingDetails.razorpayOrderId;
-//             console.log("orderId", orderId);
-//             // 3. Initialize Razorpay payment
+//             console.log("total", grandTotal)
+//             const orderId = bookingDetails.razorpayOrderId;
+            
 //             const options = {
 //                 key: "rzp_test_5Bm8QrZJpLzooF",
-//                 amount: grandTotal * 100, // Amount in smallest currency unit
+//                 amount: grandTotal*100,
 //                 currency: "INR",
 //                 name: "Waterz Rentals",
 //                 description: "Yacht Booking Payment",
 //                 order_id: orderId,
 //                 handler: async (response: any) => {
-//                   try {
-//                       // 4. Verify payment with backend
-//                       const token = localStorage.getItem('token');
-//                       await axios.post('http://localhost:3001/payment/verify', 
-//                           {
-//                               paymentDetails: {
-//                                   razorpay_order_id: response.razorpay_order_id,
-//                                   razorpay_payment_id: response.razorpay_payment_id,
-//                                   razorpay_signature: response.razorpay_signature
-//                               }
-//                           },
-//                           {
-//                               headers: {
-//                                   'Content-Type': 'application/json',
-//                                   Authorization: `Bearer ${token}`
-//                               }
-//                           }
-//                       );
-                      
-//                       // 5. On successful verification
-//                       navigate('/payment-success');
-//                   } catch (error) {
-//                       console.error('Payment verification failed:', error);
-//                       navigate('/payment-failed');
-//                   }
-//               },
+//                     try {
+//                         const token = localStorage.getItem('token');
+//                         await axios.post('http://localhost:3001/payment/verify', 
+//                             {
+//                                 paymentDetails: {
+//                                     razorpay_order_id: response.razorpay_order_id,
+//                                     razorpay_payment_id: response.razorpay_payment_id,
+//                                     razorpay_signature: response.razorpay_signature
+//                                 }
+//                             },
+//                             {
+//                                 headers: {
+//                                     'Content-Type': 'application/json',
+//                                     Authorization: `Bearer ${token}`
+//                                 }
+//                             }
+//                         );
+//                         navigate('/payment-success');
+//                     } catch (error) {
+//                         console.error('Payment verification failed:', error);
+//                         navigate('/payment-failed');
+//                     }
+//                 },
 //                 prefill: {
-//                     name: "Customer Name", // Get from user context
-//                     email: "customer@example.com",
-//                     contact: "9999999999"
+//                     name: bookingDetails.name,
+//                     email: bookingDetails.email,
+//                     contact: bookingDetails.phone
 //                 },
 //                 theme: {
 //                     color: "#3399cc"
@@ -347,42 +429,26 @@ export default Total;
 //             </div>
 //             <div className={styles.total_box}>
 //                 <div className={styles.item_row}>
-//                     <div className={styles.item_label}>Number of People = {bookingDetails.PeopleNo}</div>
-//                     <div className={styles.item_value}>{peopleCharge.toLocaleString()}</div>
+//                     <div className={styles.item_label}>Package Price</div>
+//                     <div className={styles.item_value}>{packagePrice.toLocaleString()}</div>
 //                 </div>
 //                 <div className={styles.item_row}>
-//                     <div className={styles.item_label}>Sailing Time = {bookingDetails.sailingTime} hrs</div>
-//                     <div className={styles.item_value}>{sailingCharge.toLocaleString()}</div>
+//                     <div className={styles.item_label}>Addon Services</div>
+//                     <div className={styles.item_value}>{addonServicesPrice.toLocaleString()}</div>
 //                 </div>
-//                 <div className={styles.item_row}>
-//                     <div className={styles.item_label}>Still Time = {bookingDetails.stillTime} hrs</div>
-//                     <div className={styles.item_value}>{stillCharge.toLocaleString()}</div>
-//                 </div>
-//                 {bookingDetails.specialEvent && (
-//                     <div className={styles.item_row}>
-//                         <div className={styles.item_label}>Special Event: {bookingDetails.specialEvent}</div>
-//                         <div className={styles.item_value}>{eventCharge.toLocaleString()}</div>
-//                     </div>
-//                 )}
-//                 {bookingDetails.specialRequest && (
-//                     <div className={styles.item_row}>
-//                         <div className={styles.item_label}>Add ons: {bookingDetails.specialRequest}</div>
-//                         <div className={styles.item_value}>{addOnsCharge.toLocaleString()}</div>
-//                     </div>
-//                 )}
 //                 <hr className={styles.divider} />
 //                 <div className={styles.item_row}>
 //                     <div className={styles.item_label}>Total</div>
 //                     <div className={styles.item_value}>{subtotal.toLocaleString()}</div>
 //                 </div>
 //                 <div className={styles.item_row}>
-//                     <div className={styles.item_label}>CGST</div>
+//                     <div className={styles.item_label}>GST(18%)</div>
 //                     <div className={styles.item_value}>{cgst.toLocaleString()}</div>
 //                 </div>
-//                 <div className={styles.item_row}>
+//                 {/* <div className={styles.item_row}>
 //                     <div className={styles.item_label}>SGST</div>
 //                     <div className={styles.item_value}>{sgst.toLocaleString()}</div>
-//                 </div>
+//                 </div> */}
 //                 <hr className={styles.divider} />
 //                 <div className={`${styles.item_row} ${styles.grand_total}`}>
 //                     <div className={styles.item_label}>Grand Total</div>
@@ -399,3 +465,4 @@ export default Total;
 // };
 
 // export default Total;
+

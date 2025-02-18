@@ -4,6 +4,17 @@ import { Yacht } from "../types/yachts";
 import { Idealyacht } from "../types/yachts";
 import { bookYacht } from "../types/yachts";
 
+export interface CouponCode {
+  promoCode: string;
+  grandTotal: number;
+  bookingId: string;
+}
+
+export interface CodeResponse{
+  discount: number;
+  discountType: string;
+}
+
 export const yachtAPI = {
     getAllYachts: async (): Promise<Yacht[]> => {
       const response = await apiClient.get(paths.getYachtList);
@@ -37,6 +48,11 @@ export const yachtAPI = {
 
     getYachtById: async (id : string): Promise<Yacht[]> => {
       const response = await apiClient.get(`${paths.getYachtById}/${id}`);
+      return response.data;
+    },
+
+    couponCode: async (coupon : CouponCode): Promise<CodeResponse> => {
+      const response = await apiClient.post(paths.couponCode, {coupon});
       return response.data;
     },
   };

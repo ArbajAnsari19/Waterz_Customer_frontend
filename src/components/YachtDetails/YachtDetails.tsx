@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import styles from "../../styles/YachtDetails/YachtDetails.module.css";
-
+import { getYachtPrice } from '../../types/pricing';
 // Constant details that don't change between yachts
 const constantDetails = {
   schedule: [
@@ -74,6 +74,9 @@ const Details: React.FC = () => {
     });
   };
 
+  const currentSailingPrice = getYachtPrice(yacht, 'sailing');
+  const currentAnchoragePrice = getYachtPrice(yacht, 'anchoring');
+
   return (
     <div className={styles.comp_body}>
       <div className={styles.yatchBox}>
@@ -93,7 +96,7 @@ const Details: React.FC = () => {
                 <div className={styles.pricess}>
                   <div className={styles.price_type}>Sailing Price</div>
                   <div className={styles.price_value}>
-                    ₹{yacht.price?.sailing?.peakTime?.toLocaleString() || 'N/A'} per hour
+                    ₹{currentSailingPrice || 'N/A'} per hour
                   </div>
                   {/* <div className={styles.price_value}>
                     Non Peak Time: ₹{yacht.price?.sailing?.nonPeakTime?.toLocaleString() || 'N/A'} per hour
@@ -102,7 +105,7 @@ const Details: React.FC = () => {
                 <div className={styles.pricess2}>
                   <div className={styles.price_type}>Anchoring Price</div>
                   <div className={styles.price_value}>
-                   ₹{yacht.price?.anchoring?.peakTime?.toLocaleString() || 'N/A'} per hour
+                   ₹{currentAnchoragePrice || 'N/A'} per hour
                   </div>
                   {/* <div className={styles.price_value}>
                     Non Peak Time: ₹{yacht.price?.anchoring?.nonPeakTime?.toLocaleString() || 'N/A'} per hour

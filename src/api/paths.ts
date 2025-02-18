@@ -33,6 +33,7 @@ export const paths = {
     currentRides: `${customer}/current/rides`,
     prevRides: `${customer}/prev/rides`,
     prevRidesId: `${customer}/rides`,
+    couponCode: `${customer}/validatePromoCode`
 };
 
 export default paths;

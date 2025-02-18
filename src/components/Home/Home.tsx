@@ -81,25 +81,25 @@ const eventData = [
 const Home: React.FC = () => {
   const { yachts, loading, error } = useTopYachts();
 
-  if (loading) {
-    return (
-      <div className={styles.comp_body}>
-        <div className={styles.hero_body}>
-          <div>Loading...</div>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className={styles.comp_body}>
+  //       <div className={styles.hero_body}>
+  //         <div>Loading...</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className={styles.comp_body}>
-        <div className={styles.hero_body}>
-          <div>{error}</div>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className={styles.comp_body}>
+  //       <div className={styles.hero_body}>
+  //         <div>{error}</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={styles.comp_body}>

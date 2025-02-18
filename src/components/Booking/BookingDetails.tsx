@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Yacht } from "../../types/yachts";
 
 
-
 interface FormData {
   startDate: Date | null;
   startTime: Date | null;
@@ -84,7 +83,7 @@ const BookingDetails: React.FC = () => {
   // Convert addon services to Select options
   const addonServicesOptions = yachtData?.addonServices.map(service => ({
     value: service.service,
-    label: `${service.service} ($${service.pricePerHour}/hour)`,
+    label: `${service.service} (₹${service.pricePerHour}/hour)`,
     price: service.pricePerHour
   })) || [];
 
@@ -99,7 +98,7 @@ const BookingDetails: React.FC = () => {
 
     return {
       value: packageType,
-      label: `${sailingTime} hours sailing + ${anchoringTime} hour anchorage ($${totalPrice})`,
+      label: `${sailingTime} hours sailing + ${anchoringTime} hour anchorage (₹${totalPrice})`,
       price: totalPrice
     };
   }) || [];
@@ -186,6 +185,7 @@ const BookingDetails: React.FC = () => {
           state: {
             // @ts-ignore
             bookingDetails: response.booking,
+            pricingDetail: response,
             // @ts-ignore
             orderId: response.orderId,
             packageTotal: priceDetails.packageTotal,
@@ -199,6 +199,7 @@ const BookingDetails: React.FC = () => {
       setIsLoading(false);
     }
   };
+
 
   if (!yachtData) {
     return <div>Loading yacht details...</div>;
