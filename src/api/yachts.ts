@@ -13,6 +13,7 @@ export interface CouponCode {
 export interface CodeResponse{
   discount: number;
   discountType: string;
+  orderId: string;
 }
 
 export const yachtAPI = {
