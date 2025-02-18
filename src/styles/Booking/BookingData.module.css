@@ -6,7 +6,7 @@
     padding: 0;
     width: 90%;
     max-width: 1450px;
-    margin: 0rem 0 1rem 0;
+    margin: 8rem 0 1rem 0;
 }
 
 .image_box {
@@ -36,6 +36,11 @@
     letter-spacing: 0.01em;
     text-align: left;
     margin-bottom: 2rem;
+    width: 100%;
+    width: 100%;
+    word-wrap: break-word;  /* Ensures long words break */
+    overflow-wrap: break-word; /* Ensures text breaks properly */
+    white-space: normal; /* Allows wrapping */
 }
 
 .section_head2 {

@@ -5,7 +5,9 @@ import Y2 from "../../assets/Yatch/Y2.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { yachtAPI } from "../../api/yachts";
-
+import { useAppDispatch } from "../../redux/store/hook";
+import { toast } from "react-toastify";
+import { setLoading } from "../../redux/slices/loadingSlice";
 declare global {
     interface Window {
         Razorpay: any;
@@ -16,6 +18,7 @@ declare global {
 
 const Total: React.FC = () => {
     const location = useLocation();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [showCouponInput, setShowCouponInput] = useState(false);
     const [couponCode, setCouponCode] = useState("");
@@ -139,6 +142,7 @@ const Total: React.FC = () => {
                 order_id: orderId,
                 handler: async (response: any) => {
                     try {
+                        dispatch(setLoading(true));
                         const token = localStorage.getItem('token');
                         await axios.post('http://localhost:8000/payment/verify', 
                             {
@@ -155,8 +159,12 @@ const Total: React.FC = () => {
                                 }
                             }
                         );
+                        toast.success('Payment verification successfull')
+                        dispatch(setLoading(false));
                         navigate('/payment-success');
                     } catch (error) {
+                        dispatch(setLoading(false));
+                        toast.error('Payment verification failed')
                         console.error('Payment verification failed:', error);
                         navigate('/payment-failed');
                     }
@@ -175,6 +183,7 @@ const Total: React.FC = () => {
             rzp.open();
 
         } catch (error) {
+            toast.error('Error initiating payment')
             console.error('Error initiating payment:', error);
         }
     };

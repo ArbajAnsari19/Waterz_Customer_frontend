@@ -11,7 +11,12 @@ import SolutionCard from "../Layouts/SolutionCard";
 import EventCard from "../Layouts/EventCard";
 import { useTopYachts } from "../../hooks/useTopYacht";
 import { Link } from "react-router-dom";
-import Loader1 from "../Loaders/Loader1";
+import { toast } from "react-toastify";
+import sunset from "../../assets/Yatch/sunset.jpg";
+import adventure from "../../assets/Yatch/adventure.jpg";
+import corporate from "../../assets/Yatch/corporate.jpg";
+import itinerary from "../../assets/Yatch/itinerary.jpg";
+import romantic from "../../assets/Yatch/romantic.jpeg";
 const solutionData = [
   {
     id: "solution-1",
@@ -53,35 +58,35 @@ const eventData = [
   },
   {
     id: "event-2",
-    imgUrl: event1,
+    imgUrl: sunset,
     event: "Sunset Cruise Packages",
   },
   {
     id: "event-3",
-    imgUrl: event1,
+    imgUrl: corporate,
     event: "Corporate Event Charters",
   },
   {
     id: "event-4",
-    imgUrl: event1,
+    imgUrl: romantic,
     event: "Romantic Yacht Getaways",
   },
   {
     id: "event-5",
-    imgUrl: event1,
+    imgUrl: adventure,
     event: "Adventure Tours",
   },
   {
     id: "event-6",
-    imgUrl: event1,
+    imgUrl: itinerary,
     event: "Custom Itinerary Voyages",
   },
 ];
 
 const Home: React.FC = () => {
-  const { yachts, error } = useTopYachts();
+  const { yachts,  error } = useTopYachts();
 
-  // if (!loading) {
+  // if (loading) {
   //   return (
   //     <div className={styles.comp_body}>
   //       <div className={styles.hero_body}>
@@ -92,13 +97,7 @@ const Home: React.FC = () => {
   // }
 
   if (error) {
-    return (
-      <div className={styles.comp_body}>
-        <div className={styles.hero_body}>
-          <div>{error}</div>
-        </div>
-      </div>
-    );
+    toast.error("Something Wrong Happened")
   }
 
   return (
@@ -139,13 +138,34 @@ const Home: React.FC = () => {
         </div>
         <div className={styles.yatch_slider}>
           <Swiper
-            spaceBetween={10}
-            slidesPerView={3.2}
+            spaceBetween={50}
+            slidesPerView="auto"
             pagination={{ clickable: true }}
-            style={{ padding: "20px 0", width:"100%" }}
+            style={{ 
+              padding: "20px 0", 
+              width: "100%",
+            }}
+            breakpoints={{
+              320: {
+                slidesPerView: "auto",
+                spaceBetween: 10
+              },
+              480: {
+                slidesPerView: "auto",
+                spaceBetween: 15
+              },
+              768: {
+                slidesPerView: "auto",
+                spaceBetween: 20
+              },
+              1024: {
+                slidesPerView: "auto",
+                spaceBetween: 40
+              }
+            }}
           >
             {yachts.map((yacht) => (
-              <SwiperSlide key={yacht._id}>
+              <SwiperSlide key={yacht._id} className={styles.swiper_slide} >
                 {/* @ts-ignore */}
                 <YachtCard yacht={yacht} />
               </SwiperSlide>

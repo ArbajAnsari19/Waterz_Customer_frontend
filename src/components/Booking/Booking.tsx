@@ -7,24 +7,26 @@ import 'swiper/swiper-bundle.css';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { bookingAPI } from "../../api/bookingApi";
-
+import { useAppDispatch } from "../../redux/store/hook";
+import { toast } from "react-toastify";
+import { setLoading } from "../../redux/slices/loadingSlice";
 interface BookingType {
   _id: string;
   name: string;
   capacity: number;
-  startingPrice: string;
+  startDate: string;
   images: string[];
 }
 const Booking: React.FC = () => {
   const [currentBookings, setCurrentBookings] = useState<BookingType[]>([]);
   const [previousBookings, setPreviousBookings] = useState<BookingType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        setIsLoading(true);
+        dispatch(setLoading(true));
         const current = await bookingAPI.getCurrentBookings();
         const previous = await bookingAPI.getPreviousBookings();
         console.log("CURRENT DATA IS HERE :",current);
@@ -37,20 +39,20 @@ const Booking: React.FC = () => {
           setPreviousBookings(previous);
         }
       } catch (err: any) {
+        dispatch(setLoading(false));
         setError(err?.message || 'Failed to fetch bookings');
       } finally {
-        setIsLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
     fetchBookings();
   }, []);
-  // if (isLoading) {
-  //   return <div className={styles.loading}>Loading bookings...</div>;
-  // }
-  // if (error) {
-  //   return <div className={styles.error}>{error}</div>;
-  // }
+
+  if (error) {
+    toast.error("Something Wrong Happened")
+  }
+  
   if (!currentBookings || !previousBookings) {
     return <div className={styles.error}>No booking data available</div>;
   }
@@ -83,18 +85,39 @@ const Booking: React.FC = () => {
           {currentBookings.length === 0 ? (
             <NoBookingsMessage type="current" />
           ) : (
-            <Swiper
-              spaceBetween={10}
-              slidesPerView={3.2}
-              pagination={{ clickable: true }}
-              style={{ padding: "20px 0", width: "100%" }}
-            >
+          <Swiper
+            spaceBetween={50}
+            slidesPerView="auto"
+            pagination={{ clickable: true }}
+            style={{ 
+              padding: "20px 0", 
+              width: "100%",
+            }}
+            breakpoints={{
+              320: {
+                slidesPerView: "auto",
+                spaceBetween: 10
+              },
+              480: {
+                slidesPerView: "auto",
+                spaceBetween: 15
+              },
+              768: {
+                slidesPerView: "auto",
+                spaceBetween: 20
+              },
+              1024: {
+                slidesPerView: "auto",
+                spaceBetween: 40
+              }
+            }}
+          >
               {currentBookings.map((booking) => (
-                <SwiperSlide key={booking._id}>
+                <SwiperSlide key={booking._id}  className={styles.swiper_slide}>
                   <BookedCard
                     name={booking.name}
                     capacity={booking.capacity}
-                    startingPrice={booking.startingPrice}
+                    startDate={booking.startDate}
                     images={booking.images[0]}
                     bookingId={booking._id}
                     booking={booking}
@@ -112,17 +135,38 @@ const Booking: React.FC = () => {
             <NoBookingsMessage type="previous" />
           ) : (
             <Swiper
-              spaceBetween={10}
-              slidesPerView={3.2}
-              pagination={{ clickable: true }}
-              style={{ padding: "20px 0", width: "100%" }}
-            >
+            spaceBetween={50}
+            slidesPerView="auto"
+            pagination={{ clickable: true }}
+            style={{ 
+              padding: "20px 0", 
+              width: "100%",
+            }}
+            breakpoints={{
+              320: {
+                slidesPerView: "auto",
+                spaceBetween: 10
+              },
+              480: {
+                slidesPerView: "auto",
+                spaceBetween: 15
+              },
+              768: {
+                slidesPerView: "auto",
+                spaceBetween: 20
+              },
+              1024: {
+                slidesPerView: "auto",
+                spaceBetween: 40
+              }
+            }}
+          >
               {previousBookings.map((booking) => (
-                <SwiperSlide key={booking._id}>
+                <SwiperSlide key={booking._id} className={styles.swiper_slide}>
                   <BookedCard
                     name={booking.name}
                     capacity={booking.capacity}
-                    startingPrice={booking.startingPrice}
+                    startDate={booking.startDate}
                     images={booking.images[0]}
                     bookingId={booking._id}
                     booking={booking}

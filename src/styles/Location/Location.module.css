@@ -135,5 +135,6 @@
   }
   .submit_button {
     width: 40%;
+    min-width: 8.5rem;
   }
 }

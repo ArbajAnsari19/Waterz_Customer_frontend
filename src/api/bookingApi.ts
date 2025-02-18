@@ -5,7 +5,7 @@ export interface Booking {
   _id: string;
   name: string;
   capacity: number;
-  startingPrice: string;
+  startDate: string;
   images: string[];
 }
 

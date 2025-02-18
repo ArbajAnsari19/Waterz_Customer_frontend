@@ -4,6 +4,7 @@ import YachtCard from "../Layouts/YatchCard";
 import { useYachts } from "../../hooks/useYachts";
 import { useLocation } from "react-router-dom";
 import { Yacht } from "../../types/yachts";
+import { toast } from "react-toastify";
 
 interface LocationState {
     yachts: Yacht[];
@@ -12,7 +13,7 @@ interface LocationState {
 const Choose: React.FC = () => {
   const location = useLocation();
   const state = (location.state as LocationState) || null;
-  const { yachts: hookYachts, loading } = useYachts();
+  const { yachts: hookYachts, error } = useYachts();
 
   // Determine which yachts to display.
   // If ideal yachts were returned and are non-empty, use them.
@@ -23,9 +24,9 @@ const Choose: React.FC = () => {
   const filterEmpty = idealYachts && idealYachts.length === 0;
   const displayedYachts = idealYachts && idealYachts.length > 0 ? idealYachts : hookYachts;
 
-//   if (!idealYachts && loading) {
-//     return <div>Loading...</div>;
-//   }
+  if (error) {
+    toast.error("Something Wrong Happened")
+  }
 
   return (
     <div className={styles.comp_body}>

@@ -1,8 +1,7 @@
-// const URL = "https://waterz-backend.onrender.com"; 
-const URL = "http://localhost:8000"; //local server
+const URL = "https://waterz-backend.onrender.com"; 
+// const URL = "http://localhost:8000"; //local server
 const userBaseURL = URL + "/user";
 const signUp = URL + "/auth";
-const booking = URL + "/booking";
 const customer = URL + "/customer";
 export const paths = {
   // Auth endpoints
