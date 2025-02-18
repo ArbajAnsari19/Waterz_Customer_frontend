@@ -98,7 +98,7 @@ const Total: React.FC = () => {
             
             let calculatedDiscount = 0;
             if (discountType === "PERCENTAGE") {
-                calculatedDiscount = (bookingDetails.totalAmount * discountValue) / 100;
+                calculatedDiscount = discountValue;
             } else if (discountType === "FIXED") {
                 calculatedDiscount = discountValue;
             }
