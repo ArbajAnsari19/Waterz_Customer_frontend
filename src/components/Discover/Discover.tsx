@@ -29,7 +29,7 @@ const Discover: React.FC = () => {
             </div> */}
             <div className={styles.hero_left}>
                 <div className={styles.hero_head}>
-                    Book Your Yatch
+                    Book Your Yacht
                 </div>
                 <Link to="/location" >
                   <div className={styles.hero_btn}>
