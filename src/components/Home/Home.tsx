@@ -105,7 +105,7 @@ const Home: React.FC = () => {
       <div className={styles.hero_body}>
         <div className={styles.hero_left}>
           <div className={styles.hero_head}>
-            Exclusive Yatch Rentals Available
+            Exclusive Yacht Rentals Available
           </div>
           <div className={styles.hero_subhead}>
             Discover unparalleled luxury and convenience with our 
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
           </div>
           <Link to="/location">
             <div className={styles.hero_btn}>
-              Book Your Yatch
+              Book Your Yacht
             </div>
           </Link>
         </div>
