@@ -4,7 +4,6 @@ import YachtCard from "../Layouts/YatchCard";
 import hh1 from "../../assets/Home/hh1.svg";
 import hh2 from "../../assets/Home/hh2.svg";
 import hh3 from "../../assets/Home/hh3.svg";
-import event1 from "../../assets/Event/event1.svg";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import SolutionCard from "../Layouts/SolutionCard";
