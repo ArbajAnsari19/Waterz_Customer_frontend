@@ -96,26 +96,33 @@ const Details: React.FC = () => {
                 <div className={styles.pricess}>
                   <div className={styles.price_type}>Sailing Price</div>
                   <div className={styles.price_value}>
-                    ₹{currentSailingPrice || 'N/A'} per hour
+                    Peak Time: ₹{yacht.price?.sailing?.peakTime?.toLocaleString() || 'N/A'} per hour
                   </div>
-                  {/* <div className={styles.price_value}>
+                  <div className={styles.price_value}>
                     Non Peak Time: ₹{yacht.price?.sailing?.nonPeakTime?.toLocaleString() || 'N/A'} per hour
-                  </div> */}
+                  </div>
                 </div>
                 <div className={styles.pricess2}>
                   <div className={styles.price_type}>Anchoring Price</div>
                   <div className={styles.price_value}>
-                   ₹{currentAnchoragePrice || 'N/A'} per hour
+                    Peak Time: ₹{yacht.price?.anchoring?.peakTime?.toLocaleString() || 'N/A'} per hour
                   </div>
-                  {/* <div className={styles.price_value}>
+                  <div className={styles.price_value}>
                     Non Peak Time: ₹{yacht.price?.anchoring?.nonPeakTime?.toLocaleString() || 'N/A'} per hour
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </div>
             <div className={styles.Right}>
               <button className={styles.bookButton} onClick={handleBookNow}>Book Now</button>
             </div>
+          </div>
+
+          {/* About Yacht */}
+          <div className={styles.about}>
+            <h3>Peak & Non-peak Hours</h3>
+            <p>Peak Hours: 5:00 PM to 8:00 AM</p>
+            <p>Non Peak Hours: 8:00 AM to 5:00 PM</p>
           </div>
 
           {/* About Yacht */}
