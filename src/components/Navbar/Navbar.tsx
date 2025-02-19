@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
         <div className={styles.brand}>
           <Link to="/">
             {/* <div className={styles.logobox}> */}
-                <img src={logo} width="100%"  />
+                <img src={logo} width="100%" style={{paddingTop:"8px"}} />
             {/* </div> */}
           </Link>
         </div>

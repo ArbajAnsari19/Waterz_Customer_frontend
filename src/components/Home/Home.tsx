@@ -17,6 +17,7 @@ import adventure from "../../assets/Yatch/adventure.jpg";
 import corporate from "../../assets/Yatch/corporate.jpg";
 import itinerary from "../../assets/Yatch/itinerary.jpg";
 import romantic from "../../assets/Yatch/romantic.jpeg";
+import luxury from "../../assets/Yatch/luxury.jpg";
 const solutionData = [
   {
     id: "solution-1",
@@ -53,13 +54,13 @@ const solutionData = [
 const eventData = [
   {
     id: "event-1",
-    imgUrl: event1,
-    event: "Luxury Yacht Experience",
+    imgUrl: sunset,
+    event: "Sunset Cruise Packages",
   },
   {
     id: "event-2",
-    imgUrl: sunset,
-    event: "Sunset Cruise Packages",
+    imgUrl: luxury,
+    event: "Luxury Yacht Experience",
   },
   {
     id: "event-3",
