@@ -9,6 +9,20 @@
     margin: 8rem 0 1rem 0;
 }
 
+.form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 90%;
+  margin: 1rem auto;
+}
+
+.form_label {
+  font-size: 24px;
+  color: #000000;
+}
+
+
 .image_box{
     display: flex;
     align-items: center;
@@ -88,4 +102,8 @@
     /* overflow: hidden; */
     padding: 0px 0;
     margin: 1rem 0 3rem 0;
+}
+.swiper_slide {
+    width: 300px !important;
+    min-width: 300px !important;
 }

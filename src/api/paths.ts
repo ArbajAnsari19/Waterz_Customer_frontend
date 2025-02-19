@@ -1,8 +1,7 @@
-const URL = "https://waterz-backend.onrender.com"; 
-// const URL = "http://localhost:8000"; //local server
+// const URL = "https://waterz-backend.onrender.com"; 
+const URL = "http://localhost:8000"; //local server
 const userBaseURL = URL + "/user";
 const signUp = URL + "/auth";
-const booking = URL + "/booking";
 const customer = URL + "/customer";
 export const paths = {
   // Auth endpoints
@@ -20,18 +19,20 @@ export const paths = {
   // yacht
   getYachtList: `${customer}/listAll`,
   getTopYachts: `${customer}/topYatch`,
+  getYachtById: `${customer}/yatch-detail`,
 
   // query
   userQuery: `${URL}/query`,
 
   // filter
-  locationFilter: `${booking}/idealYatchs`,
-  bookYacht: `${booking}/create`,
+  locationFilter: `${customer}/idealYatchs`,
+  bookYacht: `${customer}/create`,
 
   // Booking endpoints
     currentRides: `${customer}/current/rides`,
     prevRides: `${customer}/prev/rides`,
     prevRidesId: `${customer}/rides`,
+    couponCode: `${customer}/validatePromoCode`
 };
 
 export default paths;

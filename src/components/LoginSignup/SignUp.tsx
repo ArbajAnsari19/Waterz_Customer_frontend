@@ -7,9 +7,9 @@ import { authAPI } from "../../api/auth";
 import SuccessScreen from "./OTPVerified";
 
 interface OTPData {
-  otp: number;
+  otp: string;
   token: string;
-  type: string;
+  role: string;
 }
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +20,7 @@ interface SignupData {
   email: string;
   phone: string;
   password: string;
-  type: string;
+  role: string;
   agreeToTerms: boolean;
 }
 
@@ -34,7 +34,7 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
     email: '',
     phone: '',
     password: '',
-    type: 'customer', 
+    role: 'customer', 
     agreeToTerms: false
   });
 
@@ -156,7 +156,7 @@ const SignUp: React.FC = () => {
 
   const handleSignupComplete = async (data: SignupData) => {
     try {
-      //@ts-ignore
+      // @ts-ignore
       const response: SignupResponse = await authAPI.signup(data);
       setFormData(data);
       setSignupToken(response.token);
@@ -166,17 +166,17 @@ const SignUp: React.FC = () => {
     }
   };
 
-  const handleOTPVerify = async (otp: number) => {
+  const handleOTPVerify = async (otp: string) => {
     try {
       if (!formData || !signupToken) {
         throw new Error('Missing required data for verification');
       }
       
       const otpData: OTPData = {
-        otp,
+        otp : otp,
         token: signupToken,
-        type: formData.type
-      };
+        role: formData.role
+      };otp
       
       await authAPI.verifyOTP(otpData);
       setCurrentView('success');
@@ -188,6 +188,7 @@ const SignUp: React.FC = () => {
   return (
     <>
       {currentView === 'signup' && <SignupForm onSubmit={handleSignupComplete} />}
+      {/* @ts-ignore */}
       {currentView === 'otp' && formData && <OTPVerification email={formData.email} onVerify={handleOTPVerify} onBack={() => setCurrentView('signup')} />}
       {currentView === 'success' && <SuccessScreen />}
     </>

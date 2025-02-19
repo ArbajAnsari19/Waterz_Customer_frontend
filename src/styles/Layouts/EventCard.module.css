@@ -5,7 +5,7 @@
     align-items: center;
     border-radius: 36px;
     padding: 0;
-    width: 400px;
+    width: 300px;
     gap: 1.5rem;
     margin: 1.5rem 0;
 }
@@ -14,6 +14,7 @@
 }
 .eventImg{
     width: 100%;
+    border-radius: 12px;
 }
 .event{
     font-size: 24px;
@@ -24,3 +25,9 @@
     margin: 10px 0 0 10px;
     width: 100%;
 }
+
+ @media (max-width: 768px){
+    .card{
+        width: 250px;
+    }
+ }
