@@ -1,7 +1,6 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import styles from "../../styles/YachtDetails/YachtDetails.module.css";
-import { getYachtPrice } from '../../types/pricing';
 // Constant details that don't change between yachts
 const constantDetails = {
   schedule: [
@@ -74,8 +73,6 @@ const Details: React.FC = () => {
     });
   };
 
-  const currentSailingPrice = getYachtPrice(yacht, 'sailing');
-  const currentAnchoragePrice = getYachtPrice(yacht, 'anchoring');
 
   return (
     <div className={styles.comp_body}>
@@ -156,7 +153,7 @@ const Details: React.FC = () => {
                 {/* @ts-ignore */}
                 {yacht.addonServices.map(service => (
                   <li key={service._id}>
-                    {service.service}: ₹{service.pricePerHour.toLocaleString()} per hour
+                    {service.service}: ₹{service.pricePerHour.toLocaleString()} 
                   </li>
                 ))}
               </ul>
