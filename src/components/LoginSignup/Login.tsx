@@ -110,7 +110,7 @@ const LoginForm = () => {
               <span>or</span>
             </div>
 
-        <GoogleAuthButton onClick={handleGoogleLogin} />
+            <GoogleAuthButton text="Sign in with Google" />
 
             <p className={styles.loginPrompt}>
               Don't have an account? <a href="/signup" className={styles.link}>Sign Up</a>

@@ -2,6 +2,10 @@ import { apiClient, nonAuthApiClient } from './apiClient';
 import paths from './paths';
 import { UserDetails } from '../types/user';
 
+
+const GOOGLE_REDIRECT_URI = 'https://www.wavezgoa.com/auth/google/callback';
+
+
 interface LoginCredentials {
   email: string;
   password: string;
@@ -67,4 +71,7 @@ export const authAPI = {
     const response = await apiClient.put(paths.updateUserProfile, userData);
     return response.data;
   },
+  initiateGoogleAuth: () => {
+    window.location.href = `${paths.googleAuth}?redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}`;
+  }
 };
