@@ -21,9 +21,9 @@ const LoginForm = () => {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGoogleLogin = () => {
-    window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
-  };
+  // const handleGoogleLogin = () => {
+  //   window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
