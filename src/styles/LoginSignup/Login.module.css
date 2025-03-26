@@ -20,6 +20,63 @@
     gap: 10px;
 }
 
+.googleButton {
+    width: 100%;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
+  .googleIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .divider span {
+    padding: 0 10px;
+    color: #666;
+  }
+
+
+.error {
+    color: red;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .switchPrompt {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .link {
+    color: #0066ff;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
 .formHeader {
     /* margin-bottom: 2rem; */
 }

@@ -4,7 +4,8 @@ import { useAppDispatch } from "../../redux/store/hook";
 import { setUserDetails } from "../../redux/slices/userSlice";
 import styles from "../../styles/LoginSignup/Login.module.css";
 import loginPic from "../../assets/LoginSignUp/signup.webp";
-import googleIcon from "../../assets/LoginSignUp/google.svg";
+import GoogleAuthButton from '../Button/AuthButton';
+
 import { authAPI } from "../../api/auth";
 
 const LoginForm = () => {
@@ -20,6 +21,9 @@ const LoginForm = () => {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -106,14 +110,7 @@ const LoginForm = () => {
               <span>or</span>
             </div>
 
-            <button 
-              type="button" 
-              className={styles.googleButton}
-              disabled={isLoading}
-            >
-              <img src={googleIcon} alt="Google" />
-              Sign In with Google
-            </button>
+        <GoogleAuthButton onClick={handleGoogleLogin} />
 
             <p className={styles.loginPrompt}>
               Don't have an account? <a href="/signup" className={styles.link}>Sign Up</a>
