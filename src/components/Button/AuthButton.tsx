@@ -1,6 +1,6 @@
 import React from 'react';
 import { authAPI } from '../../api/auth';
-import googleIcon from "../../assets/icons/google.svg";
+import googleIcon from "../../assets/LoginSignUp/google.svg";
 import styles from "../../styles/LoginSignup/Login.module.css";
 
 interface GoogleAuthButtonProps {
