@@ -145,6 +145,7 @@ const Total: React.FC = () => {
                         dispatch(setLoading(true));
                         const token = localStorage.getItem('token');
                         await axios.post('http://localhost:8000/payment/verify', 
+                        // await axios.post('https://backend.wavezgoa.com/payment/verify', 
                             {
                                 paymentDetails: {
                                     razorpay_order_id: response.razorpay_order_id,
