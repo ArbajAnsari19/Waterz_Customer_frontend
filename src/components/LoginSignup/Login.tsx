@@ -4,8 +4,7 @@ import { useAppDispatch } from "../../redux/store/hook";
 import { setUserDetails } from "../../redux/slices/userSlice";
 import styles from "../../styles/LoginSignup/Login.module.css";
 import loginPic from "../../assets/LoginSignUp/signup.webp";
-import GoogleAuthButton from '../Button/AuthButton';
-
+import GoogleAuthButton from "./GoogleAuth";
 import { authAPI } from "../../api/auth";
 
 const LoginForm = () => {
@@ -21,9 +20,6 @@ const LoginForm = () => {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // const handleGoogleLogin = () => {
-  //   window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
-  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -143,27 +139,26 @@ export default Login;
 // import { setUserDetails } from "../../redux/slices/userSlice";
 // import styles from "../../styles/LoginSignup/Login.module.css";
 // import loginPic from "../../assets/LoginSignUp/signup.webp";
-// import googleIcon from "../../assets/LoginSignUp/google.svg";
-// import Welcome from "./Welcome";
+// import GoogleAuthButton from '../Button/AuthButton';
+
 // import { authAPI } from "../../api/auth";
 
-// interface LoginFormProps {
-//   type: string;
-// }
-
-// const LoginForm = ({ type }: LoginFormProps) => {
+// const LoginForm = () => {
 //   const navigate = useNavigate();
 //   const dispatch = useAppDispatch();
   
 //   const [formData, setFormData] = useState({
 //     email: '',
 //     password: '',
-//     role: type,
+//     role: 'customer',
 //   });
 
 //   const [error, setError] = useState<string>('');
 //   const [isLoading, setIsLoading] = useState(false);
 
+//   // const handleGoogleLogin = () => {
+//   //   window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
+//   // };
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault();
 //     setError('');
@@ -177,12 +172,10 @@ export default Login;
 //       setIsLoading(true);
 //       const response = await authAPI.login(formData);
       
-//       // Store token and user data in localStorage
 //       if (response.token) {
 //         localStorage.setItem('token', response.token);
 //         localStorage.setItem('userData', JSON.stringify(response.user));
         
-//         // Update Redux state with user details
 //         dispatch(setUserDetails({
 //           id: response.user.id,
 //           email: response.user.email,
@@ -191,7 +184,6 @@ export default Login;
 //         }));
 //       }
       
-//       // Navigate to discover page
 //       navigate('/discover');
       
 //     } catch (err: any) {
@@ -213,7 +205,7 @@ export default Login;
 //           )}
 
 //           <div className={styles.formHeader}>
-//             <span className={styles.userType}>{type}</span>
+//             <span className={styles.userType}>Customer</span>
 //             <h1 className={styles.formTitle}>Welcome Back!</h1>
 //             <p className={styles.formSubtitle}>Enter your Credentials to get access to your account</p>
 //           </div>
@@ -253,14 +245,7 @@ export default Login;
 //               <span>or</span>
 //             </div>
 
-//             <button 
-//               type="button" 
-//               className={styles.googleButton}
-//               disabled={isLoading}
-//             >
-//               <img src={googleIcon} alt="Google" />
-//               Sign In with Google
-//             </button>
+//             <GoogleAuthButton text="Sign in with Google" />
 
 //             <p className={styles.loginPrompt}>
 //               Don't have an account? <a href="/signup" className={styles.link}>Sign Up</a>
@@ -281,17 +266,8 @@ export default Login;
 // };
 
 // const Login: React.FC = () => {
-//   const [type, setType] = useState<string | null>(null);
-  
-//   return (
-//     <>
-//       {type === null ? (
-//         <Welcome setType={setType} />
-//       ) : (
-//         <LoginForm type={type} />
-//       )}
-//     </>
-//   );
+//   return <LoginForm />;
 // };
 
 // export default Login;
+

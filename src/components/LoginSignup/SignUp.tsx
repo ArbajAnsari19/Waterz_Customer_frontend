@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../styles/LoginSignup/Signup.module.css";
 import signPic from "../../assets/LoginSignUp/signup.webp";
-import googleIcon from "../../assets/LoginSignUp/google.svg";
 import OTPVerification from "./OTP";
 import { authAPI } from "../../api/auth";
 import SuccessScreen from "./OTPVerified";
 import { useNavigate } from "react-router-dom";
+import GoogleAuthButton from "./GoogleAuth";
 
 interface OTPData {
   otp: string;
@@ -90,7 +90,7 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
     <div className={styles.container_body}>
       <div className={styles.container}>
         <div className={styles.contentSection}>
-          {error && <p>{error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
           <div className={styles.formHeader}>
             <span className={styles.userType}>Customer</span>
             <h1 className={styles.formTitle}>Get Started Now</h1>
@@ -165,10 +165,9 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
               {isLoading ? 'Signing up...' : 'Sign Up'}
             </button>
             <div className={styles.divider}><span>or</span></div>
-            <button type="button" className={styles.googleButton}>
-              <img src={googleIcon} alt="Google" />
-              Sign Up with Google
-            </button>
+            
+            <GoogleAuthButton text="Sign Up with Google" />
+            
             <p className={styles.loginPrompt}>
               Already have an account? <a href="/login" className={styles.link}>Log in</a>
             </p>
@@ -205,7 +204,7 @@ const SignUp: React.FC = () => {
       setSignupToken(response.token);
       setCurrentView('otp');
     } catch (err: any) {
-      console.log("error", )
+      console.log("error", err);
       throw err;
     }
   };
@@ -232,15 +231,19 @@ const SignUp: React.FC = () => {
   return (
     <>
       {currentView === 'signup' && <SignupForm onSubmit={handleSignupComplete} />}
-      {/* @ts-ignore */}
-      {currentView === 'otp' && formData && <OTPVerification email={formData.email} onVerify={handleOTPVerify} onBack={() => setCurrentView('signup')} />}
+      {currentView === 'otp' && formData && (
+        <OTPVerification 
+          email={formData.email} 
+          onVerify={handleOTPVerify} 
+          onBack={() => setCurrentView('signup')} 
+        />
+      )}
       {currentView === 'success' && <SuccessScreen />}
     </>
   );
 };
 
 export default SignUp;
-
 
 
 // import React, { useState, useEffect } from "react";
@@ -250,13 +253,13 @@ export default SignUp;
 // import OTPVerification from "./OTP";
 // import { authAPI } from "../../api/auth";
 // import SuccessScreen from "./OTPVerified";
+// import { useNavigate } from "react-router-dom";
 
 // interface OTPData {
 //   otp: string;
 //   token: string;
 //   role: string;
 // }
-// import { useNavigate } from "react-router-dom";
 
 // type ViewState = 'signup' | 'otp' | 'success';
 
@@ -273,25 +276,51 @@ export default SignUp;
 //   token: string;
 // }
 
+// // Email validation using an RFC 5322–inspired regex (good compromise)
+// const validateEmail = (email: string): boolean => {
+//   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+//   return emailRegex.test(email);
+// };
+
+// // Password must contain at least one uppercase letter and one special character
+// const validatePassword = (password: string): boolean => {
+//   const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
+//   return passwordRegex.test(password);
+// };
+
 // const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<void>; }) => {
 //   const [formData, setFormData] = useState<SignupData>({
 //     name: '',
 //     email: '',
 //     phone: '',
 //     password: '',
-//     role: 'customer', 
+//     role: 'customer',
 //     agreeToTerms: false
 //   });
 
+//   // We'll use a single error string for simplicity
 //   const [error, setError] = useState<string>('');
 //   const [isLoading, setIsLoading] = useState(false);
 
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault();
 //     setError('');
-    
+
+//     // Basic required field check
 //     if (!formData.name || !formData.email || !formData.phone || !formData.password || !formData.agreeToTerms) {
 //       setError('Please fill in all required fields');
+//       return;
+//     }
+
+//     // Validate email using RFC5322–inspired regex
+//     if (!validateEmail(formData.email)) {
+//       setError('Please enter a valid email address');
+//       return;
+//     }
+
+//     // Validate password format
+//     if (!validatePassword(formData.password)) {
+//       setError('Password must contain at least one uppercase letter and one special character');
 //       return;
 //     }
 
@@ -322,7 +351,7 @@ export default SignUp;
 //                 type="text"
 //                 placeholder="Enter your name"
 //                 value={formData.name}
-//                 onChange={(e) => setFormData({...formData, name: e.target.value})}
+//                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
 //               />
 //             </div>
 //             <div className={styles.formGroup}>
@@ -331,7 +360,16 @@ export default SignUp;
 //                 type="email"
 //                 placeholder="Enter your email address"
 //                 value={formData.email}
-//                 onChange={(e) => setFormData({...formData, email: e.target.value})}
+//                 onChange={(e) => {
+//                   const email = e.target.value;
+//                   setFormData({ ...formData, email });
+//                   // Provide immediate feedback if desired
+//                   if (email && !validateEmail(email)) {
+//                     setError('Please enter a valid email address');
+//                   } else {
+//                     setError('');
+//                   }
+//                 }}
 //               />
 //             </div>
 //             <div className={styles.formGroup}>
@@ -340,7 +378,7 @@ export default SignUp;
 //                 type="tel"
 //                 placeholder="Enter your phone number"
 //                 value={formData.phone}
-//                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
+//                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
 //               />
 //             </div>
 //             <div className={styles.formGroup}>
@@ -349,7 +387,15 @@ export default SignUp;
 //                 type="password"
 //                 placeholder="Enter your password"
 //                 value={formData.password}
-//                 onChange={(e) => setFormData({...formData, password: e.target.value})}
+//                 onChange={(e) => {
+//                   const password = e.target.value;
+//                   setFormData({ ...formData, password });
+//                   if (password && !validatePassword(password)) {
+//                     setError('Password must contain at least one uppercase letter and one special character');
+//                   } else {
+//                     setError('');
+//                   }
+//                 }}
 //               />
 //             </div>
 //             <div className={styles.checkboxGroup}>
@@ -357,7 +403,7 @@ export default SignUp;
 //                 type="checkbox"
 //                 id="terms"
 //                 checked={formData.agreeToTerms}
-//                 onChange={(e) => setFormData({...formData, agreeToTerms: e.target.checked})}
+//                 onChange={(e) => setFormData({ ...formData, agreeToTerms: e.target.checked })}
 //               />
 //               <label htmlFor="terms">
 //                 I agree to the <a href="#" className={styles.link}>terms & conditions</a>
@@ -407,6 +453,7 @@ export default SignUp;
 //       setSignupToken(response.token);
 //       setCurrentView('otp');
 //     } catch (err: any) {
+//       console.log("error", )
 //       throw err;
 //     }
 //   };
@@ -418,10 +465,10 @@ export default SignUp;
 //       }
       
 //       const otpData: OTPData = {
-//         otp : otp,
+//         otp: otp,
 //         token: signupToken,
 //         role: formData.role
-//       };otp
+//       };
       
 //       await authAPI.verifyOTP(otpData);
 //       setCurrentView('success');

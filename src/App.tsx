@@ -22,7 +22,7 @@ import { useAppSelector, useAppDispatch } from './redux/store/hook';
 import { setUserDetails } from './redux/slices/userSlice';
 import { authAPI } from './api/auth';
 import GoogleCallback from './components/LoginSignup/GoogleCallback';
-
+import CompleteProfile from './components/LoginSignup/CompleteProfile';
 
 function App() {
   const location = useLocation();
@@ -64,7 +64,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        {/* <Route path="/auth/google/callback" element={<GoogleCallback />} /> */}
+        <Route path="/auth-callback" element={<GoogleCallback />} />
+        <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<MainLayout><Home/></MainLayout>} />

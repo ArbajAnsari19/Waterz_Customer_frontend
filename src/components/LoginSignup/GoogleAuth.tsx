@@ -1,24 +1,29 @@
-// src/components/LoginSignup/GoogleAuth.tsx
 import React from 'react';
-import googleIcon from "../../assets/LoginSignUp/google.svg";
-import styles from "../../styles/LoginSignup/Login.module.css";
+import styles from '../../styles/LoginSignup/Login.module.css';
+import googleIcon from '../../assets/LoginSignUp/google.svg';
 
-const GoogleAuth: React.FC = () => {
-  const handleGoogleLogin = () => {
-    // Redirect to backend Google auth route
-    window.location.href = 'https://backend.wavezgoa.com/auth/google';
+interface GoogleAuthButtonProps {
+  text: string;
+}
+
+const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ text }) => {
+  const handleGoogleAuth = () => {
+    // Redirect to the backend Google auth endpoint
+    window.location.href = 'http://localhost:8000/auth/google';
+    // Use this for production:
+    // window.location.href = 'https://www.backend.wavezgoa.com/auth/google';
   };
 
   return (
     <button 
       type="button" 
       className={styles.googleButton}
-      onClick={handleGoogleLogin}
+      onClick={handleGoogleAuth}
     >
       <img src={googleIcon} alt="Google" />
-      Sign in with Google
+      {text}
     </button>
   );
 };
 
-export default GoogleAuth;
+export default GoogleAuthButton;
