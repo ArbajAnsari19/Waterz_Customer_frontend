@@ -41,6 +41,8 @@ function App() {
         try {
           const response = await authAPI.getUserProfile();
           // @ts-ignore
+          console.log("responsee", response)
+          // @ts-ignore
           const profile = response.user;
           console.log("profile", profile)
           // Map API response to our store's userDetails structure.

@@ -48,7 +48,7 @@ const CompleteProfile: React.FC = () => {
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   
       // Use the authAPI to update the user profile
-      const response = await authAPI.updateUserProfile({ phone, role });
+      const response = await authAPI.completeGoogleProfile({ phone, role });
   
       // Remove the temp token and set the new one
       localStorage.removeItem('tempToken');
