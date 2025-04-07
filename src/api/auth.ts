@@ -3,7 +3,7 @@ import paths from './paths';
 import { UserDetails } from '../types/user';
 
 
-const GOOGLE_REDIRECT_URI = 'https://www.wavezgoa.com/auth/google/callback';
+const GOOGLE_REDIRECT_URI = 'https://www.wavezgoa.com/discover';
 
 
 interface LoginCredentials {
