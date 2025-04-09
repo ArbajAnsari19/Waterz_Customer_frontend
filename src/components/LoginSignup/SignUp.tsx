@@ -40,7 +40,10 @@ const validatePassword = (password: string): boolean => {
   return passwordRegex.test(password);
 };
 
-const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<void>; }) => {
+const SignupForm = ({ onSubmit, apiError }: { 
+  onSubmit: (formData: SignupData) => Promise<void>; 
+  apiError: string;
+}) => {
   const [formData, setFormData] = useState<SignupData>({
     name: '',
     email: '',
@@ -53,6 +56,13 @@ const SignupForm = ({ onSubmit }: { onSubmit: (formData: SignupData) => Promise<
   // We'll use a single error string for simplicity
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Update local error state when apiError changes
+  useEffect(() => {
+    if (apiError) {
+      setError(apiError);
+    }
+  }, [apiError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,6 +195,7 @@ const SignUp: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('signup');
   const [formData, setFormData] = useState<SignupData | null>(null);
   const [signupToken, setSignupToken] = useState<string>('');
+  const [apiError, setApiError] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -198,19 +209,23 @@ const SignUp: React.FC = () => {
 
   const handleSignupComplete = async (data: SignupData) => {
     try {
+      setApiError(''); // Clear any previous errors
       // @ts-ignore
       const response: SignupResponse = await authAPI.signup(data);
       setFormData(data);
       setSignupToken(response.token);
       setCurrentView('otp');
     } catch (err: any) {
-      console.log("error", err);
-      throw err;
+      // Extract the error message from the API response
+      const errorMessage = err.response?.data?.message || err.response?.message || err.message || 'Failed to sign up. Please try again.';
+      setApiError(errorMessage);
+      throw err; // Re-throw to handle in the form component if needed
     }
   };
 
   const handleOTPVerify = async (otp: string) => {
     try {
+      setApiError(''); // Clear any previous errors
       if (!formData || !signupToken) {
         throw new Error('Missing required data for verification');
       }
@@ -224,18 +239,21 @@ const SignUp: React.FC = () => {
       await authAPI.verifyOTP(otpData);
       setCurrentView('success');
     } catch (err: any) {
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to verify OTP. Please try again.';
+      setApiError(errorMessage);
       throw err;
     }
   };
 
   return (
     <>
-      {currentView === 'signup' && <SignupForm onSubmit={handleSignupComplete} />}
+      {currentView === 'signup' && <SignupForm onSubmit={handleSignupComplete} apiError={apiError} />}
       {currentView === 'otp' && formData && (
         <OTPVerification 
           email={formData.email} 
           onVerify={handleOTPVerify} 
           onBack={() => setCurrentView('signup')} 
+          // error={apiError}
         />
       )}
       {currentView === 'success' && <SuccessScreen />}
@@ -245,15 +263,14 @@ const SignUp: React.FC = () => {
 
 export default SignUp;
 
-
 // import React, { useState, useEffect } from "react";
 // import styles from "../../styles/LoginSignup/Signup.module.css";
 // import signPic from "../../assets/LoginSignUp/signup.webp";
-// import googleIcon from "../../assets/LoginSignUp/google.svg";
 // import OTPVerification from "./OTP";
 // import { authAPI } from "../../api/auth";
 // import SuccessScreen from "./OTPVerified";
 // import { useNavigate } from "react-router-dom";
+// import GoogleAuthButton from "./GoogleAuth";
 
 // interface OTPData {
 //   otp: string;
@@ -338,7 +355,7 @@ export default SignUp;
 //     <div className={styles.container_body}>
 //       <div className={styles.container}>
 //         <div className={styles.contentSection}>
-//           {error && <p>{error}</p>}
+//           {error && <p className={styles.error}>{error}</p>}
 //           <div className={styles.formHeader}>
 //             <span className={styles.userType}>Customer</span>
 //             <h1 className={styles.formTitle}>Get Started Now</h1>
@@ -413,10 +430,9 @@ export default SignUp;
 //               {isLoading ? 'Signing up...' : 'Sign Up'}
 //             </button>
 //             <div className={styles.divider}><span>or</span></div>
-//             <button type="button" className={styles.googleButton}>
-//               <img src={googleIcon} alt="Google" />
-//               Sign Up with Google
-//             </button>
+            
+//             <GoogleAuthButton text="Sign Up with Google" />
+            
 //             <p className={styles.loginPrompt}>
 //               Already have an account? <a href="/login" className={styles.link}>Log in</a>
 //             </p>
@@ -453,7 +469,8 @@ export default SignUp;
 //       setSignupToken(response.token);
 //       setCurrentView('otp');
 //     } catch (err: any) {
-//       console.log("error", )
+      
+//       console.log("error", err.response.message);
 //       throw err;
 //     }
 //   };
@@ -480,8 +497,13 @@ export default SignUp;
 //   return (
 //     <>
 //       {currentView === 'signup' && <SignupForm onSubmit={handleSignupComplete} />}
-//       {/* @ts-ignore */}
-//       {currentView === 'otp' && formData && <OTPVerification email={formData.email} onVerify={handleOTPVerify} onBack={() => setCurrentView('signup')} />}
+//       {currentView === 'otp' && formData && (
+//         <OTPVerification 
+//           email={formData.email} 
+//           onVerify={handleOTPVerify} 
+//           onBack={() => setCurrentView('signup')} 
+//         />
+//       )}
 //       {currentView === 'success' && <SuccessScreen />}
 //     </>
 //   );

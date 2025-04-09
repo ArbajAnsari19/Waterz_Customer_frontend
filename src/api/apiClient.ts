@@ -114,7 +114,8 @@ nonAuthApiClient.interceptors.response.use(
       case 400:
         return Promise.reject({ type: 'VALIDATION_ERROR', message: 'Validation error' });
       case 500:
-        return Promise.reject({ type: 'SERVER_ERROR', message: 'Server error' });
+        // @ts-ignore
+        return Promise.reject({ type: 'SERVER_ERROR', message: error.response.data.message || 'Server error' });
       default:
         return Promise.reject({ type: 'UNEXPECTED_ERROR', message: 'An unexpected error occurred' });
     }
