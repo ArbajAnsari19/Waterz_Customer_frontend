@@ -9,7 +9,11 @@ const GoogleCallback: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
-
+  useEffect(() => {
+    console.log("Location search:", location.search);
+    console.log("All params:", Object.fromEntries(new URLSearchParams(location.search)));
+    // ... rest of the code
+  }, []);
   useEffect(() => {
     const handleCallback = async () => {
       try {
@@ -18,7 +22,7 @@ const GoogleCallback: React.FC = () => {
         const params = new URLSearchParams(location.search);
         console.log('Location search params22:', location.search);
         console.log('params', params)
-        const token = params.get('code');
+        const token = params.get('token'); // Correct      
         console.log('token', token)
         if (!token) {
           setMessage('Authentication failed: No token received');
