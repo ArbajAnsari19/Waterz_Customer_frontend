@@ -129,7 +129,7 @@
     padding: 20px 0;
 }
 
-@media (max-width: 1300px){
+/* @media (max-width: 1300px){
     .hero_box2{
       display: none;
     }
@@ -139,6 +139,12 @@
     }
     .hero_right{
         align-items: center;
+    }
+} */
+
+@media (max-width: 1380px){
+    .gridBox{
+        place-items: center;
     }
 }
 

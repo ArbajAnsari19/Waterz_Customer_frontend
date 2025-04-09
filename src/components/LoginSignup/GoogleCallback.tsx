@@ -18,7 +18,7 @@ const GoogleCallback: React.FC = () => {
         const params = new URLSearchParams(location.search);
         console.log('Location search params22:', location.search);
         console.log('params', params)
-        const token = params.get('code');
+        const token = params.get('token');
         console.log('token', token)
         if (!token) {
           setMessage('Authentication failed: No token received');
